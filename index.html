@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 
-// Versión fija con URLs de imágenes insertadas directamente en el código.
+// App Románico – versión estable con URLs pegadas en el código
+// Nota: Requiere Tailwind (o ajusta las clases a tu CSS). No depende de librerías externas.
 
 const GLOSARIO = {
-  nave: { titulo: "Nave", texto: "Pasillo principal de la iglesia, cubierto por una bóveda de cañón." },
-  transepto: { titulo: "Transepto", texto: "Brazo corto que cruza la nave principal, formando una cruz latina." },
-  crucero: { titulo: "Crucero", texto: "Punto donde se cruzan la nave y el transepto. Suele destacarse con una cúpula o torre." },
+  nave: { titulo: "Nave", texto: "Pasillo principal de la iglesia, normalmente con bóveda de cañón." },
+  transepto: { titulo: "Transepto", texto: "Brazo que cruza la nave principal formando la cruz latina." },
+  crucero: { titulo: "Crucero", texto: "Intersección entre nave y transepto; puede tener cúpula o torre." },
   abside: { titulo: "Ábside", texto: "Cabecera semicircular donde se sitúa el altar mayor." },
-  girola: { titulo: "Girola", texto: "Pasillo curvo detrás del altar mayor que permite rodear el altar." },
-  contrafuertes: { titulo: "Contrafuertes", texto: "Refuerzos exteriores que sostienen el peso de las bóvedas." },
-  bovedaCanon: { titulo: "Bóveda de cañón", texto: "Techo curvo en forma de medio cilindro que cubre la nave central." },
-  arcoMedioPunto: { titulo: "Arco de medio punto", texto: "Arco semicircular característico del estilo románico." },
-  pilares: { titulo: "Pilares y columnas", texto: "Elementos que soportan los arcos y bóvedas." },
+  girola: { titulo: "Girola", texto: "Pasillo curvo que permite rodear el presbiterio en iglesias de peregrinación." },
+  contrafuertes: { titulo: "Contrafuertes", texto: "Refuerzos exteriores que contrarrestan el empuje de las bóvedas." },
+  bovedaCanon: { titulo: "Bóveda de cañón", texto: "Techo curvo en medio cilindro, típico de la nave central." },
+  arcoMedioPunto: { titulo: "Arco de medio punto", texto: "Arco semicircular característico del románico." },
+  pilares: { titulo: "Pilares y columnas", texto: "Soportes que reciben los arcos y las bóvedas." },
 };
 
 function Tooltip({ item, onClose }) {
@@ -19,8 +20,8 @@ function Tooltip({ item, onClose }) {
   if (!g) return null;
   return (
     <div className="max-w-xs rounded-xl border bg-white p-3 shadow-xl">
-      <div className="flex justify-between items-center mb-1">
-        <strong>{g.titulo}</strong>
+      <div className="mb-1 flex items-center justify-between">
+        <strong className="text-sm">{g.titulo}</strong>
         <button onClick={onClose} className="text-xs underline">cerrar</button>
       </div>
       <p className="text-sm">{g.texto}</p>
@@ -30,16 +31,23 @@ function Tooltip({ item, onClose }) {
 
 function ImagenInteractiva({ src, puntos, onPick }) {
   return (
-    <div className="relative w-full rounded-xl overflow-hidden border shadow bg-white">
-      <img src={src} alt="Esquema románico" className="w-full h-auto object-contain" />
-      {puntos.map((p, i) => (
-        <button
-          key={i}
-          className="absolute w-6 h-6 rounded-full bg-blue-600/80 hover:bg-blue-700 text-white text-xs flex items-center justify-center"
-          style={{ top: p.y, left: p.x }}
-          onClick={() => onPick(p.id)}
-        >i</button>
-      ))}
+    <div className="rounded-2xl border shadow-sm bg-white">
+      <div className="relative w-full overflow-hidden">
+        <img src={src} alt="Esquema románico" className="block w-full h-auto select-none" />
+        {/* Hotspots */}
+        {puntos.map((p, i) => (
+          <button
+            key={i}
+            type="button"
+            className="absolute -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-blue-600/80 hover:bg-blue-700 text-white text-xs flex items-center justify-center"
+            style={{ left: p.x, top: p.y }}
+            onClick={() => onPick(p.id)}
+            aria-label={`Ver ${p.id}`}
+          >
+            i
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -48,20 +56,22 @@ export default function AppRomanico() {
   const [info, setInfo] = useState(null);
   const [tab, setTab] = useState('planta');
 
+  // 👉 Reemplaza estas dos URLs por las tuyas si lo deseas
   const plantaSrc = "https://upload.wikimedia.org/wikipedia/commons/8/8d/Santiago-Catedral-Planta.gif";
   const alzadoSrc = "https://cerebriti.b-cdn.net/uploads/a71eb2064d5d3ea6e55936f4faebdb28.jpg";
 
+  // Posiciones aproximadas (ajústalas si tu imagen cambia)
   const puntosPlanta = [
-    { id: 'abside', x: '48%', y: '18%' },
-    { id: 'girola', x: '48%', y: '22%' },
-    { id: 'crucero', x: '48%', y: '38%' },
-    { id: 'transepto', x: '35%', y: '37%' },
-    { id: 'nave', x: '48%', y: '65%' },
-    { id: 'contrafuertes', x: '22%', y: '60%' },
+    { id: 'abside', x: '50%', y: '18%' },
+    { id: 'girola', x: '50%', y: '23%' },
+    { id: 'crucero', x: '50%', y: '38%' },
+    { id: 'transepto', x: '35%', y: '38%' },
+    { id: 'nave', x: '50%', y: '65%' },
+    { id: 'contrafuertes', x: '20%', y: '60%' },
   ];
 
   const puntosAlzado = [
-    { id: 'bovedaCanon', x: '48%', y: '25%' },
+    { id: 'bovedaCanon', x: '50%', y: '20%' },
     { id: 'arcoMedioPunto', x: '42%', y: '55%' },
     { id: 'pilares', x: '38%', y: '70%' },
     { id: 'contrafuertes', x: '18%', y: '65%' },
@@ -69,19 +79,19 @@ export default function AppRomanico() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-900">
-      <div className="max-w-6xl mx-auto p-4 pb-16">
-        <header className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+      <div className="mx-auto max-w-6xl p-4 pb-16">
+        <header className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold">Arquitectura Románica · Mini app 2º ESO</h1>
             <p className="text-sm text-slate-600">Pulsa en los puntos sobre la planta o el alzado para ver las explicaciones.</p>
           </div>
           <nav className="flex gap-2">
-            <button onClick={() => setTab('planta')} className={`rounded-xl border px-3 py-1 ${tab==='planta'?'bg-white shadow':''}`}>Planta</button>
-            <button onClick={() => setTab('alzado')} className={`rounded-xl border px-3 py-1 ${tab==='alzado'?'bg-white shadow':''}`}>Alzado</button>
+            <button type="button" onClick={() => setTab('planta')} className={`rounded-xl border px-3 py-1 ${tab==='planta' ? 'bg-white shadow' : ''}`}>Planta</button>
+            <button type="button" onClick={() => setTab('alzado')} className={`rounded-xl border px-3 py-1 ${tab==='alzado' ? 'bg-white shadow' : ''}`}>Alzado</button>
           </nav>
         </header>
 
-        {tab==='planta' ? (
+        {tab === 'planta' ? (
           <ImagenInteractiva src={plantaSrc} puntos={puntosPlanta} onPick={setInfo} />
         ) : (
           <ImagenInteractiva src={alzadoSrc} puntos={puntosAlzado} onPick={setInfo} />
@@ -94,7 +104,7 @@ export default function AppRomanico() {
         )}
 
         <footer className="mt-8 text-xs text-slate-500">
-          <p>Basado en el arte románico: planta de cruz latina, bóvedas de cañón, arcos de medio punto, pilares y contrafuertes. Adaptado para alumnos de 2º de ESO.</p>
+          <p>Basado en el arte románico: planta de cruz latina, bóvedas de cañón, arcos de medio punto, pilares y contrafuertes. Adaptado a 2º ESO.</p>
         </footer>
       </div>
     </div>
